@@ -30,34 +30,40 @@ export default defineConfig(({mode}) => {
                   console.log('Dev API Lead Received:', payload);
 
                   if (!resend) {
-                    console.warn('RESEND_API_KEY missing in .env. Email not sent.');
-                    res.statusCode = 200;
+                    console.error('ERROR DESARROLLO: RESEND_API_KEY no configurada en .env local.');
+                    res.statusCode = 500;
                     res.setHeader('Content-Type', 'application/json');
-                    res.end(JSON.stringify({ success: true, message: 'Logged to console (API Key missing)' }));
+                    res.end(JSON.stringify({ success: false, error: 'Configuración de Resend faltante en el servidor local.' }));
                     return;
                   }
 
                   try {
                     await resend.emails.send({
-                      from: "Leads AutoVision <onboarding@resend.dev>",
+                      from: "AutoVision <onboarding@resend.dev>",
                       to: [notificationEmail],
                       subject: `[DEV] Nuevo Lead: ${name} (${section})`,
                       html: `
-                        <h1>Nuevo Lead de AutoVision 360 (MODO DEV)</h1>
-                        <p><strong>Nombre:</strong> ${name}</p>
-                        <p><strong>WhatsApp:</strong> ${phone}</p>
-                        <p><strong>Sección:</strong> ${section}</p>
-                        <p><strong>Fecha:</strong> ${new Date().toLocaleString()}</p>
+                        <div style="font-family: sans-serif; padding: 20px; color: #333;">
+                          <h1 style="color: #001E50;">Nuevo Lead de AutoVision 360 (MODO DESARROLLO)</h1>
+                          <hr />
+                          <p><strong>Nombre:</strong> ${name}</p>
+                          <p><strong>WhatsApp:</strong> ${phone}</p>
+                          <p><strong>Sección:</strong> ${section}</p>
+                          <p><strong>Fecha:</strong> ${new Date().toLocaleString()}</p>
+                          <hr />
+                          <p style="font-size: 11px; color: #999;">Esta es una prueba desde el entorno de desarrollo local.</p>
+                        </div>
                       `,
                     });
                     
+                    console.log('Correo enviado correctamente desde el servidor dev.');
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
                     res.end(JSON.stringify({ success: true, message: 'Email sent in Dev mode' }));
                   } catch (mailError) {
-                    console.error('Error sending email in Dev:', mailError);
+                    console.error('Error al enviar correo en dev:', mailError);
                     res.statusCode = 500;
-                    res.end(JSON.stringify({ success: false, error: 'Email failed' }));
+                    res.end(JSON.stringify({ success: false, error: 'Resend falló al enviar el correo.' }));
                   }
                 } catch (e) {
                   res.statusCode = 400;
