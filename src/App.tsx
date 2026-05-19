@@ -1016,41 +1016,46 @@ export default function App() {
                 className="bg-[#f6f5f2] rounded-[2.5rem] w-full max-w-[95vw] max-h-[92vh] overflow-hidden flex flex-col shadow-2xl border border-white/20"
               >
                 <div
-                  className="px-8 py-6 flex justify-end items-center gap-3 bg-white border-b border-gray-100"
+                  className="px-8 py-6 flex justify-between items-center gap-3 bg-white border-b border-gray-100"
                 >
-                  {(selectedInfo === "Catalogo" || selectedInfo === "Infografia" || selectedInfo === "Cotizador") && (
-                    <button
-                      onClick={() => {
-                        if (deviceType === "mobile") {
-                          const assetUrl = infoContent[selectedInfo].downloadUrl || infoContent[selectedInfo].mainImage;
-                          if (assetUrl) {
-                            const link = document.createElement('a');
-                            link.href = assetUrl;
-                            link.setAttribute('download', `${selectedInfo}_Taos_2026`);
-                            link.setAttribute('target', '_blank');
-                            link.setAttribute('rel', 'noopener noreferrer');
-                            document.body.appendChild(link);
-                            link.click();
-                            document.body.removeChild(link);
+                  {(selectedInfo === "Tecnologias" || selectedInfo === "Tips") ? (
+                    <p className="text-[#001E50] font-bold text-lg tracking-tight opacity-80">Da click para conocer más</p>
+                  ) : <div />}
+                  <div className="flex items-center gap-3">
+                    {(selectedInfo === "Catalogo" || selectedInfo === "Infografia" || selectedInfo === "Cotizador") && (
+                      <button
+                        onClick={() => {
+                          if (deviceType === "mobile") {
+                            const assetUrl = infoContent[selectedInfo].downloadUrl || infoContent[selectedInfo].mainImage;
+                            if (assetUrl) {
+                              const link = document.createElement('a');
+                              link.href = assetUrl;
+                              link.setAttribute('download', `${selectedInfo}_Taos_2026`);
+                              link.setAttribute('target', '_blank');
+                              link.setAttribute('rel', 'noopener noreferrer');
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                            }
+                          } else {
+                            openWhatsAppModal(selectedInfo || "General");
                           }
-                        } else {
-                          openWhatsAppModal(selectedInfo || "General");
-                        }
-                      }}
-                      className={`text-white px-6 py-2.5 rounded-xl flex items-center gap-3 font-bold text-xs shadow-xl transition-all active:scale-95 ${
-                        deviceType === "mobile" ? "bg-[#001E50] hover:bg-black" : "bg-[#25D366] hover:bg-[#128C7E]"
-                      }`}
+                        }}
+                        className={`text-white px-6 py-2.5 rounded-xl flex items-center gap-3 font-bold text-xs shadow-xl transition-all active:scale-95 ${
+                          deviceType === "mobile" ? "bg-[#001E50] hover:bg-black" : "bg-[#25D366] hover:bg-[#128C7E]"
+                        }`}
+                      >
+                        {deviceType === "mobile" ? "Descargar" : "Enviar por WhatsApp"}{" "}
+                        {deviceType === "mobile" ? <Download size={16} /> : <WhatsAppIcon size={16} />}
+                      </button>
+                    )}
+                    <button
+                      onClick={() => setSelectedInfo(null)}
+                      className="bg-gray-100 text-gray-500 p-2.5 rounded-full transition-all hover:bg-gray-200 hover:text-black active:scale-95"
                     >
-                      {deviceType === "mobile" ? "Descargar" : "Enviar por WhatsApp"}{" "}
-                      {deviceType === "mobile" ? <Download size={16} /> : <WhatsAppIcon size={16} />}
+                      <X size={20} />
                     </button>
-                  )}
-                  <button
-                    onClick={() => setSelectedInfo(null)}
-                    className="bg-gray-100 text-gray-500 p-2.5 rounded-full transition-all hover:bg-gray-200 hover:text-black active:scale-95"
-                  >
-                    <X size={20} />
-                  </button>
+                  </div>
                 </div>
 
                 <div className="flex-1 overflow-y-auto custom-scrollbar">
