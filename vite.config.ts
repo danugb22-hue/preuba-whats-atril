@@ -7,8 +7,9 @@ import { Resend } from 'resend';
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   
-  const resend = env.RESEND_API_KEY ? new Resend(env.RESEND_API_KEY) : null;
-  const notificationEmail = env.NOTIFICATION_EMAIL || 'danugb22@gmail.com';
+  const resendApiKey = env.RESEND_API_KEY || process.env.RESEND_API_KEY;
+  const resend = resendApiKey ? new Resend(resendApiKey) : null;
+  const notificationEmail = env.NOTIFICATION_EMAIL || process.env.NOTIFICATION_EMAIL || 'danugb22@gmail.com';
 
   return {
     plugins: [
