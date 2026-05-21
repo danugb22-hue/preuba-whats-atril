@@ -470,8 +470,8 @@ export default function App() {
       description:
         "Conoce nuestras opciones de financiamiento y elige la que mejor se adapte a tus necesidades.",
       details: ["Planes a medida", "Tasas preferenciales", "Seguro incluido"],
-      mainImage: "https://lh3.googleusercontent.com/d/1dYrTjbU9SlfaILcbsK8U9XWsqOfrKHWE",
-      downloadUrl: "https://drive.google.com/uc?export=download&id=1dYrTjbU9SlfaILcbsK8U9XWsqOfrKHWE",
+      mainImage: "https://qrvwp.s3.dualstack.us-west-2.amazonaws.com/Taos-Highline-2026.png",
+      downloadUrl: "https://qrvwp.s3.dualstack.us-west-2.amazonaws.com/Taos-Highline-2026.png",
       icon: <Calculator size={24} className="text-[#001E50]" />,
     },
     Tips: {
