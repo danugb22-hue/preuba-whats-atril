@@ -144,6 +144,7 @@ export default function App() {
 
     setIsSubmitting(true);
     try {
+      // 1. Send the lead to our local API (for Resend/emails and logging)
       const response = await fetch("/api/send-lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -153,6 +154,131 @@ export default function App() {
           section: whatsappSource
         })
       });
+
+      // 2. If it's for 'Ficha Técnica', trigger the WhatsApp template Webhook
+      const isFichaTecnica = whatsappSource.toLowerCase().includes("ficha");
+      if (isFichaTecnica) {
+        // Format to international: remove non-digits, and prefix 52 if 10 digits
+        let cleanedPhone = leadPhone.replace(/\D/g, "");
+        if (cleanedPhone.length === 10) {
+          cleanedPhone = "52" + cleanedPhone;
+        }
+
+        console.log("Triggering WhatsApp webhook for Ficha Técnica:", { name: leadName, phone: cleanedPhone });
+
+        const whatsappResponse = await fetch("https://n8n.wa2desk.ai/webhook/9b0c0659-f688-4a6d-935b-e7851abad039", {
+          method: "POST",
+          headers: {
+            "Authorization": "Basic dm9sa3k6eUckeUluI3V1QWhhdFE2M1MzZG5saGNy",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            "to": cleanedPhone,
+            "template": "demo_volky_ficha_tecnica_taos_2026",
+            "language": "es",
+            "header": {
+              "type": "document",
+              "url": "https://pdfobject.com/pdf/sample.pdf",
+              "filename": "Ficha_Tecnica_Taos_2026.pdf"
+            },
+            "body": {
+              "nombre": leadName
+            }
+          })
+        });
+
+        if (whatsappResponse.ok) {
+          console.log("WhatsApp webhook executed successfully");
+        } else {
+          console.error("WhatsApp webhook returned an error status:", whatsappResponse.status);
+          const errorText = await whatsappResponse.text();
+          console.error("WhatsApp Webhook error details:", errorText);
+        }
+      }
+
+      // 3. If it's for 'Catálogo Completo' or 'Catalogo', trigger the WhatsApp template Webhook for Catalog
+      const isCatalogo = whatsappSource.toLowerCase().includes("catalogo") || whatsappSource.toLowerCase().includes("catálogo");
+      if (isCatalogo) {
+        // Format to international: remove non-digits, and prefix 52 if 10 digits
+        let cleanedPhone = leadPhone.replace(/\D/g, "");
+        if (cleanedPhone.length === 10) {
+          cleanedPhone = "52" + cleanedPhone;
+        }
+
+        console.log("Triggering WhatsApp webhook for Catálogo:", { name: leadName, phone: cleanedPhone });
+
+        const whatsappResponse = await fetch("https://n8n.wa2desk.ai/webhook/9b0c0659-f688-4a6d-935b-e7851abad039", {
+          method: "POST",
+          headers: {
+            "Authorization": "Basic dm9sa3k6eUckeUluI3V1QWhhdFE2M1MzZG5saGNy",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            "to": cleanedPhone,
+            "template": "demo_volky_catalogo_taos_2026",
+            "language": "es",
+            "header": {
+              "type": "document",
+              "url": "https://pdfobject.com/pdf/sample.pdf",
+              "filename": "Catalogo_Taos_2026.pdf"
+            },
+            "body": {
+              "nombre": leadName
+            }
+          })
+        });
+
+        if (whatsappResponse.ok) {
+          console.log("WhatsApp catalog webhook executed successfully");
+        } else {
+          console.error("WhatsApp catalog webhook returned an error status:", whatsappResponse.status);
+          const errorText = await whatsappResponse.text();
+          console.error("WhatsApp catalog Webhook error details:", errorText);
+        }
+      }
+
+      // 4. If it's for 'Infografia', 'Infografía', 'Cotizador' or 'Financiera', trigger the WhatsApp template Webhook for Infography image
+      const isInfografia = whatsappSource.toLowerCase().includes("infografia") || 
+                           whatsappSource.toLowerCase().includes("infografía") || 
+                           whatsappSource.toLowerCase().includes("cotizador") || 
+                           whatsappSource.toLowerCase().includes("financiera");
+      if (isInfografia) {
+        // Format to international: remove non-digits, and prefix 52 if 10 digits
+        let cleanedPhone = leadPhone.replace(/\D/g, "");
+        if (cleanedPhone.length === 10) {
+          cleanedPhone = "52" + cleanedPhone;
+        }
+
+        console.log("Triggering WhatsApp webhook for Infografía:", { name: leadName, phone: cleanedPhone });
+
+        const whatsappResponse = await fetch("https://n8n.wa2desk.ai/webhook/9b0c0659-f688-4a6d-935b-e7851abad039", {
+          method: "POST",
+          headers: {
+            "Authorization": "Basic dm9sa3k6eUckeUluI3V1QWhhdFE2M1MzZG5saGNy",
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            "to": cleanedPhone,
+            "template": "demo_volky_infografia_taos_2026_image",
+            "language": "es",
+            "header": {
+              "type": "image",
+              "url": "https://pbs.twimg.com/media/FIhc-DeXwAwj_9u?format=png&name=small"
+            },
+            "body": {
+              "nombre": leadName
+            }
+          })
+        });
+
+        if (whatsappResponse.ok) {
+          console.log("WhatsApp infografía webhook executed successfully");
+        } else {
+          console.error("WhatsApp infografía webhook returned an error status:", whatsappResponse.status);
+          const errorText = await whatsappResponse.text();
+          console.error("WhatsApp infografía Webhook error details:", errorText);
+        }
+      }
 
       if (response.ok) {
         setSubmitStatus("success");
